@@ -1,0 +1,90 @@
+import { useEffect, useRef, useState } from 'react';
+import './App.css';
+
+function App() {
+  const [tooted, setTooted] = useState([]);
+  const idRef = useRef();
+  const nameRef = useRef();
+  const priceRef = useRef();
+  const imageRef = useRef();
+  const stockRef = useRef();
+  const catIdRef = useRef();
+  const isActiveRef = useRef();
+  const [isUsd, setUsd] = useState(false);
+
+  useEffect(() => {
+    fetch("https://localhost:7049/api/Products")
+      .then(res => res.json())
+      .then(json => setTooted(json));
+  }, []);
+
+  function kustuta(index) {
+    fetch("https://localhost:7049/api/Products/kustuta/" + index)
+      .then(res => res.json())
+      .then(json => setTooted(json));
+  }
+
+  function lisa() {
+    fetch(`https://localhost:7049/api/Products/lisa${Number(idRef.current.value)}/${nameRef.current.value}/${Number(priceRef.current.value)}/${imageRef.current.value}/${isActiveRef.current.checked}/${Number(stockRef.current.value)}/${Number(catIdRef.current.value)}`)
+      .then(res => res.json())
+      .then(json => setTooted(json));
+  }
+
+  function dollariteks() {
+    const kurss = 1.1;
+    setUsd(true);
+    fetch("https://localhost:7049/api/Products/hind-dollaritesse/" + kurss)
+      .then(res => res.json())
+      .then(json => setTooted(json));
+  }
+
+  function eurodeks() {
+    const kurss = 0.9091;
+    setUsd(false);
+    fetch("https://localhost:7049/api/Products/hind-eurosse/" + kurss)
+      .then(res => res.json())
+      .then(json => setTooted(json));
+  }
+
+  return (
+    <div className="App">
+      <label>ID</label> <br />
+      <input ref={idRef} type="number" /> <br />
+      <label>Name</label> <br />
+      <input ref={nameRef} type="text" /> <br />
+      <label>Price</label> <br />
+      <input ref={priceRef} type="number" /> <br />
+      <label>Stock</label> <br />
+      <input ref={stockRef} type="number" /> <br />
+      <label>Image</label> <br />
+      <input ref={imageRef} type="text" /> <br />
+      <label>Category Nr</label> <br />
+      <input ref={catIdRef} type="number" /> <br />
+      <label>Active</label> <br />
+      <input ref={isActiveRef} type="checkbox" /> <br />
+      <button onClick={() => lisa()}>Lisa</button>
+      {tooted.map((toode, index) => 
+        <table>
+          <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Active</th>
+            <th>Category Nr</th>
+            <th>Image</th>
+          </tr>
+          
+          <div>{toode.id}</div>
+          <div>{toode.name}</div>
+          <div>{toode.price.toFixed(2)}</div>
+          <div>{toode.stock}</div>
+          <button onClick={() => kustuta(index)}>x</button>
+        </table>)}
+      {isUsd === false && <button onClick={() => dollariteks()}>Muuda dollariteks</button>}
+      {isUsd === true && <button onClick={() => eurodeks()}>Muuda eurodeks</button>}
+    </div>
+  );
+}
+
+export default App;
