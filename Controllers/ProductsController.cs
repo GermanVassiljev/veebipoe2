@@ -27,14 +27,14 @@ namespace veebipoe.Controllers
         }
 
         // https://localhost:4444/tooted/kustuta/0
-        [HttpGet("kustuta/{index}")]
+        [HttpDelete("kustuta/{index}")]
         public List<Product> Delete(int index)
         {
             _products.RemoveAt(index);
             return _products;
         }
 
-        [HttpGet("lisa/{id}/{name}/{image}/{price}/{active}/{stock}/{catId}")]
+        [HttpPost("lisa/{id}/{name}/{image}/{price}/{active}/{stock}/{catId}")]
         public List<Product> Add(int id, string name, string image, double price, bool active, int stock,int catId)
         {
             Product product = new Product(id, name, price, image, active, stock, catId);
@@ -50,7 +50,7 @@ namespace veebipoe.Controllers
             return _products;
         }*/
 
-        [HttpGet("hind-dollaritesse/{kurss}")] 
+        [HttpPatch("hind-dollaritesse/{kurss}")] 
         public List<Product> Dollaritesse(double kurss)
         {
             for (int i = 0; i < _products.Count; i++)
@@ -60,7 +60,7 @@ namespace veebipoe.Controllers
             return _products;
         }
 
-        [HttpGet("hind-eurosse/{kurss}")]
+        [HttpPatch("hind-eurosse/{kurss}")]
         public List<Product> Eurosse(double kurss)
         {
             for (int i = 0; i < _products.Count; i++)
